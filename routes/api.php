@@ -23,5 +23,5 @@ Route::namespace('Api')->group(function () {
         'mocks' => 'MockController'
     ]);
     Route::get('/{projectSlug}/mocks', "MockController@getAllMocksByProductSlug");
-    Route::any('/{endpoint}/{otherLinks?}', 'MockController@mock')->where('otherLinks', '(.*)');
+    Route::any('/{projectSlug}/{endpoint}/{otherLinks?}', 'MockController@mock')->where('otherLinks', '(.*)');
 });
