@@ -12,11 +12,9 @@ Base(:title="modalInfo.modalTitle" ref="thisModal")
 </template>
 <script setup>
 import { watch, reactive, ref } from 'vue';
-import useEmitter from '../../composable/emitter';
 import { convertStringToSlug } from '../../util/Helper';
 import Base from './Base';
 
-const emitter = useEmitter();
 let modal = null;
 const name = ref('');
 const slug = ref('');

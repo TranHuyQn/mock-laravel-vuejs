@@ -29,21 +29,19 @@ ConfirmModal
 <script setup>
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import useEmitter from '../../composable/emitter';
 import useMocks from "../../composable/mocks";
 import ConfirmModal from "../../components/modal/ConfirmModal";
 
 const route = useRoute();
 
-const emitter = useEmitter();
 const { mocks, getMocks, storeMock, destroyMock, updateMock } = useMocks()
 onMounted(getMocks(route.params.projectSlug))
-const confirmDeleteMock = (mock) => {
-  emitter.emit("showModalConfirm", {
-    message: `Are you sure want to delete ${mock.endpoint}?`,
-    onConfirm: () => destroyMock(mock.id)
-  });
-}
+// const confirmDeleteMock = (mock) => {
+//   emitter.emit("showModalConfirm", {
+//     message: `Are you sure want to delete ${mock.endpoint}?`,
+//     onConfirm: () => destroyMock(mock.id)
+//   });
+// }
 </script>
 
 <style scoped>
