@@ -47479,7 +47479,7 @@ function modulesToDom(list, options) {
 
   for (var i = 0; i < list.length; i++) {
     var item = list[i];
-    var id = options.base ? item[0] + options.base : item[0];
+    var id = options.Base ? item[0] + options.Base : item[0];
     var count = idCountMap[id] || 0;
     var identifier = "".concat(id, " ").concat(count);
     idCountMap[id] = count + 1;
@@ -48360,7 +48360,7 @@ function normalizeBase(base) {
     if (!base) {
         if (isBrowser) {
             // respect <base> tag
-            const baseEl = document.querySelector('base');
+            const baseEl = document.querySelector('Base.vue');
             base = (baseEl && baseEl.getAttribute('href')) || '/';
             // strip full URL origin
             base = base.replace(/^\w+:\/\/[^\/]+/, '');
@@ -48637,7 +48637,7 @@ function useHistoryStateNavigation(base) {
          */
         const hashIndex = base.indexOf('#');
         const url = hashIndex > -1
-            ? (location.host && document.querySelector('base')
+            ? (location.host && document.querySelector('Base.vue')
                 ? base
                 : base.slice(hashIndex)) + to
             : createBaseLocation() + base + to;

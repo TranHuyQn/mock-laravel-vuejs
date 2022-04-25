@@ -21,10 +21,10 @@ table.table.table-striped
         button.btn.btn-warning(type='button' @click="showModalEditProject(project)")
           i(class="bi bi-pencil-square")
           span(class="ms-2") edit
-        button.btn.btn-danger.ms-3(type="button" @click="confirmDeleteProject(project.id)")
+        button.btn.btn-danger.ms-3(type="button" @click="confirmDeleteProject(project)")
           i(class="bi bi-archive")
           span(class="ms-2") delete
-AddProjectModal
+AddProjectModal(ref="addProjectModal")
 ConfirmModal(ref="confirmModal")
 </template>
 
@@ -32,34 +32,42 @@ ConfirmModal(ref="confirmModal")
 import {onMounted, ref} from 'vue';
 import useProjects from '../../composable/projects';
 import AddProjectModal from '../../components/modal/AddProjectModal.vue';
-import useEmitter from '../../composable/emitter';
 import ConfirmModal from '../../components/modal/ConfirmModal.vue';
 
 const confirmModal = ref(null);
-const emitter = useEmitter();
-const {projects, getProjects, storeProject, destroyProject, updateProject} = useProjects()
-onMounted(getProjects)
+const addProjectModal = ref(null);
+const {projects, getProjects, storeProject, destroyProject, updateProject} = useProjects();
+onMounted(getProjects);
 const showModalAddProject = () => {
-  emitter.emit("showModalAddProject", {
+  addProjectModal.value.show({
     title: 'Add Project',
-    onSubmit: (name, slug) => {
+    onSubmit: async (name, slug) => {
       const data = {name, slug};
-      storeProject(data);
+      addProjectModal.value.hide();
+      await storeProject(data);
     }
   });
-}
+};
 const confirmDeleteProject = (project) => {
-  confirmModal.value.showModal({
+  confirmModal.value.show({
+    title: 'Confirm delete',
     message: `Are you sure want to delete <strong>${project.name}</strong> project?`,
-    onConfirm: () => destroyProject(project.id)
-  })
-}
+    buttonSubmit: {
+      label: 'Delete',
+      onSubmit: async () => {
+        confirmModal.value.hide();
+        await destroyProject(project.id);
+      },
+    }
+  });
+};
 const showModalEditProject = (project) => {
-  emitter.emit("showModalAddProject", {
+  addProjectModal.value.show({
     title: 'Edit Project',
-    onSubmit: (name, slug) => {
+    onSubmit: async (name, slug) => {
       const data = {name, slug};
-      updateProject(project.id, data);
+      addProjectModal.value.hide();
+      await updateProject(project.id, data);
     },
     name: project.name,
     slug: project.slug,

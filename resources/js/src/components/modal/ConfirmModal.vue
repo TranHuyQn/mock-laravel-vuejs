@@ -1,61 +1,38 @@
-<template lang="pug">
-#confirmModal.modal.fade( v-show="isVisible" tabindex='-1' aria-labelledby='exampleModalLabel' aria-hidden='true')
-  .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
-    .modal-content
-      .modal-header
-        h5#exampleModalLabel.modal-title Confirm
-        button.btn-close(type='button' @click="closeModal" aria-label='Close')
-      .modal-body
-        span(v-html="message" )
-      .modal-footer
-        button.btn.btn-secondary(type='button' @click="closeModal") Close
-        button.btn.btn-danger(type='button' @click="onConfirm") Delete
-</template>
 <script setup>
-import { Modal } from 'bootstrap';
-import {onMounted, ref, watch} from 'vue';
-import useEmitter from '../../composable/emitter';
+  import { ref, reactive } from "vue";
+  import Base from './Base';
+  const modal = reactive({
+    title: 'Modal confirm',
+    message: "Are you sure?",
+    buttonSubmit: {
+      label: "Submit",
+      onSubmit: () => null,
+    }
+  });
 
-const emitter = useEmitter();
-let modal = null;
+  let thisModal= ref(null);
 
-const message = ref('');
-const onConfirm = ref(() => null);
-
-const isVisible = ref(false);
-
-onMounted(() => {
-  // if (!modal) {
-  //   modal = new Modal(document.getElementById('confirmModal'));
-    // emitter.on("showModalConfirm", data => {
-    //   message.value = data.message;
-    //   onConfirm.value = () => {
-    //     data.onConfirm();
-    //     modal.hide();
-    //   };
-    //   modal.show();
-    // });
-  // }
-});
-
-watch(isVisible, () => console.log(isVisible))
-
-const showModal = (modalInfo) => {
-  message.value = modalInfo.message;
-  onConfirm.value = () => {
-    modalInfo.onConfirm();
-    closeModal();
+  const show = (modalInfo) => {
+    modal.title = modalInfo.title;
+    modal.message = modalInfo.message;
+    modal.buttonSubmit = modalInfo.buttonSubmit;
+    thisModal.value.show();
   };
-  isVisible.value = true
-}
 
-const closeModal = () => {
-  isVisible.value = false;
-}
+  const hide = () => {
+    thisModal.value.hide();
+  };
 
-defineExpose({
-  showModal,
-  closeModal,
-})
+  defineExpose({
+    show,
+    hide,
+  });
 
 </script>
+<template lang="pug">
+Base(:title="modal.title" ref="thisModal")
+  template(#body)
+    span(v-html="modal.message")
+  template(#footer)
+    button.btn.btn-danger(@click="modal.buttonSubmit.onSubmit()") {{modal.buttonSubmit.label}}
+</template>
