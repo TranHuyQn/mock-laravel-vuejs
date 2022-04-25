@@ -8,7 +8,7 @@ import JSONEditor from '../../assets/js/jsoneditor.min';
 
 let editor = null;
 
-const exportJson = () => {
+const getJson = () => {
   if (editor) {
     try {
       return JSON.stringify(editor.get());
@@ -18,8 +18,11 @@ const exportJson = () => {
   }
 }
 
+const setJson = (data) => editor.set(data)
+
 defineExpose({
-  exportJson,
+  getJson,
+  setJson
 })
 
 onMounted(() => {

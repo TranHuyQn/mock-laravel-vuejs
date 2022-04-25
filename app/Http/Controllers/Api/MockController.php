@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Mock;
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
@@ -28,12 +29,15 @@ class MockController extends Controller
    */
   public function store(Request $request)
   {
-    $isExistEndpoint = Mock::select('id')->where('endpoint',$request->endpoint)->where('project_id', $request->project_id)->exists();
+    $isExistEndpoint = Mock::select('id')->where('endpoint',$request->endpoint)->whereHas('project', function (Builder $query) use ($request) {
+      $query->where('slug', $request->projectSlug);
+    })->exists();
     if ($isExistEndpoint) {
       return response(['message' => "$request->endpoint already exist"], 422);
     }
     $mock = new Mock();
-    $mock->create($request->all());
+    $project = Project::select('id')->where('slug', $request->projectSlug)->first();
+    $mock->create(array_merge($request->except('projectSlug'), ['project_id' => $project->id]));
     return response($mock, 201);
   }
 

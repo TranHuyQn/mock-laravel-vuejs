@@ -4,7 +4,8 @@
   import {genRandomId} from "../../util/Helper";
 
   defineProps({
-    title: String
+    title: String,
+    size: String,
   });
   let modalEle = ref(null);
   let modal = null;
@@ -31,7 +32,7 @@
 
 <template lang="pug">
 .modal.fade(:id="modalId" ref="modalEle" data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
-  .modal-dialog.modal-dialog-centered.modal-dialog-scrollable
+  .modal-dialog.modal-dialog-centered.modal-dialog-scrollable(:class="size ? `modal-${size}` : ''")
     .modal-content
       .modal-header
         h5.modal-title {{title}}
